@@ -10,12 +10,12 @@ The sample code uses a common two-letter prefix (AT) to avoid conflicting with a
 ===========================================================================
 BUILD REQUIREMENTS:
 
-Mac OS X v10.6 or later
+Xcode 4.3, Mac OS X v10.7.x or later
 
 ===========================================================================
 RUNTIME REQUIREMENTS:
 
-Mac OS X v10.6 or later
+Mac OS X v10.6.x or later
 
 ===========================================================================
 PACKAGING LIST:
@@ -68,8 +68,8 @@ ATColorTableController.h/.m:
 ===========================================================================
 CHANGES FROM PREVIOUS VERSIONS:
 
-Version 1.0
-- First version.
+1.1 - Upgraded to Xcode 4.3 and Mac OS X 10.7, fixed some leaks.
+1.0 - First version.
 
 ===========================================================================
-Copyright (C) 2009 Apple Inc. All rights reserved.
+Copyright (C) 2009-2012 Apple Inc. All rights reserved.

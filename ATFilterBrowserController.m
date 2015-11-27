@@ -2,7 +2,7 @@
      File: ATFilterBrowserController.m
  Abstract: A basic controller that takes an input sourceImage and generates a resulting filteredImage through a series of modifications from NSBrowser. Demonstrates the use of SnowLeopard NSBrowser item-based API.
  
-  Version: 1.0
+  Version: 1.1
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -42,7 +42,7 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  
- Copyright (C) 2009 Apple Inc. All Rights Reserved.
+ Copyright (C) 2012 Apple Inc. All Rights Reserved.
  
  */
 
@@ -124,7 +124,10 @@ struct {
 }
 
 - (CIImage *)_rootSourceImage {
-    // The core image filters like to work with CIImages, but to be nice, ATFilterBrowserController vends and recevies NSImages to the outside world. So convert the source NSImage to a CIImage
+    // The core image filters like to work with CIImages, but to be nice,
+    // ATFilterBrowserController vends and recevies NSImages to the outside world.
+    // So convert the source NSImage to a CIImage
+    //
     CGImageRef cgImage = [self.sourceImage CGImageForProposedRect:NULL context:nil hints:nil]; // The result is autoreleased. See NSImage header file.
     CIImage *ciImage = [CIImage imageWithCGImage:cgImage];
     return ciImage;
@@ -170,7 +173,10 @@ struct {
 
 - (NSInteger)browser:(NSBrowser *)browser numberOfChildrenOfItem:(ATFilterItem *)item {
     if (!item.childItems) {
-        // Lazyily create the child filter items. All filters have the same set of children except for the "None" filter which has no children. However, that filter is created with a valid child array of count zero and will be excluded by the if check above.
+        // Lazyily create the child filter items. All filters have the same set of children
+        // except for the "None" filter which has no children. However, that filter is created
+        // with a valid child array of count zero and will be excluded by the if check above.
+        //
         item.childItems = [ATFilterBrowserController arrayOfStandardATFilterItems];
     }
     return [item.childItems count];
@@ -181,7 +187,8 @@ struct {
 }
 
 - (BOOL)browser:(NSBrowser *)browser isLeafItem:(ATFilterItem *)item {
-    // The "None" filter are the leaf items. Except that the root filter is also a "None" filter just to supply the source image, se we need to special case the root item.
+    // The "None" filter are the leaf items. Except that the root filter is also a "None"
+    // filter just to supply the source image, se we need to special case the root item.
     return (item != _rootBrowserItem && [item.filterName isEqualToString:@""]);
 }
 
@@ -191,7 +198,8 @@ struct {
 
 #pragma mark NSBrowser Layout Delegate Methods
 - (NSViewController *)browser:(NSBrowser *)browser previewViewControllerForLeafItem:(id)item {
-    // Note: The item will be set as the viewController's representedObject for easy binding creating via Interface Builder.
+    // Note: The item will be set as the viewController's representedObject for easy
+    // binding creating via Interface Builder.
     NSViewController *viewCtlr = [[[NSViewController alloc] initWithNibName:@"ATFilterBrowserPreview" bundle:nil] autorelease];
     
     NSButton *applyBtn = [[viewCtlr view] viewWithTag:100];
@@ -202,7 +210,8 @@ struct {
 }
 
 - (NSViewController *)browser:(NSBrowser *)browser headerViewControllerForItem:(id)item {
-    // Note: The item will be set as the viewController's representedObject for easy binding creating via Interface Builder.
+    // Note: The item will be set as the viewController's representedObject for easy
+    // binding creating via Interface Builder.
     NSViewController *result = [[[NSViewController alloc] initWithNibName:@"ATFilterBrowserColumnHeader" bundle:nil] autorelease];
     return result;
 }
@@ -236,5 +245,7 @@ struct {
     NSDictionary *whiteAttribute = [NSDictionary dictionaryWithObject:[NSColor whiteColor] forKey:NSForegroundColorAttributeName];
     NSAttributedString *value = [[NSAttributedString alloc] initWithString:[cell stringValue] attributes:whiteAttribute];
     [cell setAttributedStringValue:value];
+    [value release];
 }
+
 @end

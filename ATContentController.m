@@ -2,7 +2,7 @@
      File: ATContentController.m
  Abstract: The basic controller for the demo app. An instance exists inside the MainMenu.xib file.
  
-  Version: 1.0
+  Version: 1.1
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -42,11 +42,11 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  
- Copyright (C) 2009 Apple Inc. All Rights Reserved.
+ Copyright (C) 2012 Apple Inc. All Rights Reserved.
  
  */
 
-#import <QuartzCore/QuartzCore.h>s
+#import <QuartzCore/QuartzCore.h>
 
 #import "ATContentController.h"
 #import "ATImageTextCell.h"
@@ -93,7 +93,8 @@
         }
     }
 
-    // Then do another pass through and add all the folders -- including their children. A recursive loop could be used too, but we want to only go one level deep
+    // Then do another pass through and add all the folders -- including their children.
+    // A recursive loop could be used too, but we want to only go one level deep
     for (ATDesktopEntity *entity in primaryFolder.children) {
         if ([entity isKindOfClass:[ATDesktopFolderEntity class]]) {
             [_tableContents addObject:entity];
@@ -110,6 +111,8 @@
     NSImage *initialImage = [[NSImage alloc] initByReferencingURL:[[NSWorkspace sharedWorkspace] desktopImageURLForScreen:[NSScreen mainScreen]]];
     [_imageViewMain setImage:initialImage];
     [initialImage release];
+    
+    [primaryFolder release];
 }
 
 - (ATDesktopEntity *)_entityForRow:(NSInteger)row {
@@ -145,7 +148,10 @@
     }
 }
 
-// We pre-load the images in batches. We could easily use this as a point to stop loading rows that are no longer visible and don't have the images fully loaded. We use this as an entry point to start/stop watching the image for the visible items to see when it changes.
+// We pre-load the images in batches. We could easily use this as a point to stop loading
+// rows that are no longer visible and don't have the images fully loaded. We use this as
+// an entry point to start/stop watching the image for the visible items to see when it changes.
+//
 - (void)dynamicTableView:(ATDynamicTableView *)tableView changedVisibleRowsFromRange:(NSRange)oldVisibleRows toRange:(NSRange)newVisibleRows {
     // First, stop observing all prior things
     for (ATDesktopEntity *imageEntity in _observedVisibleItems) {
@@ -155,7 +161,7 @@
     }
     // Now, observe things that are newly visible and kick off a request to load the image
     [_observedVisibleItems release];
-    _observedVisibleItems = [[_tableContents subarrayWithRange:newVisibleRows] retain];
+    _observedVisibleItems = (NSMutableArray *)[[_tableContents subarrayWithRange:newVisibleRows] retain];
     for (ATDesktopEntity *imageEntity in _observedVisibleItems) {
         if ([imageEntity isKindOfClass:[ATDesktopImageEntity class]]) {
             [(ATDesktopImageEntity *)imageEntity loadImage];
@@ -201,8 +207,10 @@
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
     if (keyPath == ATEntityPropertyNamedThumbnailImage) {
         // Find the row and reload it.
-        // Note that KVO notifications may be sent from a background thread (in this case, we know they will be)
-        // We should only update the UI on the main thread, and in addition, we use NSRunLoopCommonModes to make sure the UI updates when a modal window is up.
+        // Note that KVO notifications may be sent from a background thread
+        // (in this case, we know they will be)
+        // We should only update the UI on the main thread, and in addition, we use
+        // NSRunLoopCommonModes to make sure the UI updates when a modal window is up.
         [self performSelectorOnMainThread:@selector(_reloadRowForEntity:) withObject:object waitUntilDone:NO modes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
     }
 }
@@ -244,10 +252,14 @@
     [_animationDoneTimer release];
     _animationDoneTimer = nil;
     
-    // Set the normal one to have the final image and alpha value. Set the image and update us before ordering out the animation window.
+    // Set the normal one to have the final image and alpha value.
+    // Set the image and update us before ordering out the animation window.
     [_imageViewMain setImage:[_imageViewForTransition image]];
     [_imageViewMain setAlphaValue:1.0];
-    [_imageViewMain.window displayIfNeeded]; // This displays right now, and prevents flicker if the animation window orders out before our display happened
+    
+    // This displays right now, and prevents flicker if the animation window orders
+    // out before our display happened
+    [_imageViewMain.window displayIfNeeded];
     
     // Hide the animation window
     [_windowForAnimation orderOut:nil];
@@ -300,8 +312,10 @@
 - (void)_animateImageFromRow:(NSInteger)row {
     [self _stopExistingTimerIfNeeded];
 
-    // We create a window to do the animation. The purpose of using a window is to allow an animation to happen from a non-layer backed view to over a layer-backed view. 
+    // We create a window to do the animation. The purpose of using a window is to allow an
+    // animation to happen from a non-layer backed view to over a layer-backed view.
     // We easily could use a sibling view if everything was layer backed, or non-layer backed.
+    //
     [self _ensureAnimationWindowCreated];
     
     // Grab our model object for this row
@@ -336,8 +350,13 @@
         // Also, animate the background color. This is done with the layer. See ATColorView.h/.m
         [[_colorViewMain animator] setBackgroundColor:entity.fillColor];
         
-        // At the end of the animation we want to do some cleanup. We keep track of the timer so we can stop the operation if we need to.
-        _animationDoneTimer = [[NSTimer scheduledTimerWithTimeInterval:animationDuration target:self selector:@selector(_animationDoneTimerFired:) userInfo:nil repeats:NO] retain];
+        // At the end of the animation we want to do some cleanup. We keep track of the
+        // timer so we can stop the operation if we need to.
+        _animationDoneTimer = [[NSTimer scheduledTimerWithTimeInterval:animationDuration
+                                                                target:self
+                                                              selector:@selector(_animationDoneTimerFired:)
+                                                              userInfo:nil
+                                                               repeats:NO] retain];
     }    
     [NSAnimationContext endGrouping];
 }
@@ -418,15 +437,17 @@
     [_tableViewMain reloadDataForRowIndexes:[NSIndexSet indexSetWithIndex:row] columnIndexes:[NSIndexSet indexSetWithIndex:0]];
 }
 
-
 - (IBAction)_takeFilteredImageFrom:(ATFilterBrowserController *)filterBrowser {
     // Update the model and the UI with the new image
     NSImage *image = _filterBrowserController.filteredImage;
     ATDesktopImageEntity *entity = [self _imageEntityForRow:_tableViewMain.selectedRow];
     if (entity != nil) {
+        
         // Write the file to disk so we can set it as the wallpaper
-        NSURL *imageURL = [NSURL fileURLWithPath:@"/tmp/Filtered Image.tiff"];
+        NSURL *imageURL = [NSURL URLWithString:NSTemporaryDirectory()];
+        imageURL = [imageURL URLByAppendingPathComponent:@"Filtered Image.tiff"];
         [[image TIFFRepresentation] writeToURL:imageURL atomically:NO];
+        
         // Update the URL in our model and reload the image
         entity.fileURL = imageURL;
         entity.image = nil;

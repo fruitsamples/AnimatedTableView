@@ -2,7 +2,7 @@
      File: ATDblActionImageView.h 
  Abstract: A basic subclass of NSImageView that sends the action when a double click happens. Normally the action is sent only when the image has changed.
   
-  Version: 1.0 
+  Version: 1.1 
   
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple 
  Inc. ("Apple") in consideration of your agreement to the following 
@@ -42,17 +42,12 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE 
  POSSIBILITY OF SUCH DAMAGE. 
   
- Copyright (C) 2009 Apple Inc. All Rights Reserved. 
+ Copyright (C) 2012 Apple Inc. All Rights Reserved. 
   
 */
 
-
 #import <Cocoa/Cocoa.h>
 
-
-@interface ATDblActionImageView : NSImageView {
-
-}
-
+@interface ATDblActionImageView : NSImageView
 
 @end

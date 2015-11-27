@@ -2,7 +2,7 @@
      File: ATPopupWindow.m
  Abstract:  A custom NSWindow that mainly implements a "popup" animation using CoreAnimation.
  
-  Version: 1.0
+  Version: 1.1
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -42,7 +42,7 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  
- Copyright (C) 2009 Apple Inc. All Rights Reserved.
+ Copyright (C) 2012 Apple Inc. All Rights Reserved.
  
  */
 
@@ -62,7 +62,9 @@
 - (void)_cleanupAndRestoreViews {
     // Swap back the content view
     if (_oldContentView != nil) {
-        // We disable screen updates to avoid any flashing that might happening when one layer backed view goes away and another regular view replaces it.
+        // We disable screen updates to avoid any flashing that might happening when one
+        // layer backed view goes away and another regular view replaces it.
+        //
         NSDisableScreenUpdates();
         [self setFrame:_originalWidowFrame display:NO];
         [self setContentView:_oldContentView];
@@ -125,13 +127,18 @@
     }
 }
 
-// Our window doesn't have a title bar or a resize bar, but we want it to still become key. However, we want the tableview to draw as the first responder even when the window isn't key. So, we return NO when we are drawing to work around that.
+// Our window doesn't have a title bar or a resize bar, but we want it to still become key.
+// However, we want the tableview to draw as the first responder even when the window
+// isn't key. So, we return NO when we are drawing to work around that.
+//
 - (BOOL)canBecomeKeyWindow {
     if (_pretendKeyForDrawing) return NO;
     return YES;
 }
 
-// The scrollers always draw blue if they are in a key window. Temporarily tell them that our window is key for caching the proper image.
+// The scrollers always draw blue if they are in a key window.
+// Temporarily tell them that our window is key for caching the proper image.
+//
 - (BOOL)isKeyWindow {
     if (_pretendKeyForDrawing) return YES;
     return [super isKeyWindow];

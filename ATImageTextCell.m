@@ -2,7 +2,7 @@
      File: ATImageTextCell.m
  Abstract: A complex image and text cell that also draws a fill color. The cell uses sub-cells to delegate the real work to other cells.
  
-  Version: 1.0
+  Version: 1.1
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -42,7 +42,7 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  
- Copyright (C) 2009 Apple Inc. All Rights Reserved.
+ Copyright (C) 2012 Apple Inc. All Rights Reserved.
  
  */
 
@@ -149,7 +149,8 @@
 }
 
 - (NSRect)imageRectForBounds:(NSRect)frame {
-    // We would apply any inset that here that drawWithFrame did before calling drawInteriorWithFrame:. It does none, so we don't do anything.
+    // We would apply any inset that here that drawWithFrame did before calling
+    // drawInteriorWithFrame:. It does none, so we don't do anything.
     return [self _imageFrameForInteriorFrame:frame];
 }
 
@@ -241,9 +242,13 @@
     return YES;
 }
 
-// Our custom editor notifies us when the color was changed or cancelled. We then signal the tableview of the change. This could easily be abstracted to work with a protocol instead of directly with the dynamicTableView class.
+// Our custom editor notifies us when the color was changed or cancelled.
+// We then signal the tableview of the change. This could easily be abstracted to work with
+// a protocol instead of directly with the dynamicTableView class.
+//
 - (void)_tellControlViewWillStartEditing {
-    // We retain ourselves to keep us alive. The delegate does not retain us, and we want to be alive until the controller is done editing.
+    // We retain ourselves to keep us alive.
+    // The delegate does not retain us, and we want to be alive until the controller is done editing.
     [self retain];
     [ATColorTableController sharedColorTableController].delegate = self;
     [(ATDynamicTableView *)[self controlView] willStartEditingProperty:@"fillColor" forCell:self];

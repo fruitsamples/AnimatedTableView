@@ -2,7 +2,7 @@
      File: ATDesktopEntity.m
  Abstract: A sample model object. A base abstract class (ATDesktopEntity) implements caching of a file URL. One concrete subclass implements the ability to have an array of children (ATDesktopFolderEntity). Another (ATDesktopImageEntity) represents an image suitable for the desktop wallpaper.
  
-  Version: 1.0
+  Version: 1.1
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -42,7 +42,7 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  
- Copyright (C) 2009 Apple Inc. All Rights Reserved.
+ Copyright (C) 2012 Apple Inc. All Rights Reserved.
  
 */
 
@@ -50,7 +50,8 @@
 
 #define THUMBNAIL_HEIGHT 180.0 
 
-// For the purposes of a demo, we intentionally make things slower. Turning off the DEMO_MODE define will make things run at normal speed.
+// For the purposes of a demo, we intentionally make things slower.
+// Turning off the DEMO_MODE define will make things run at normal speed.
 #define DEMO_MODE 1
 
 @implementation ATDesktopEntity
@@ -92,7 +93,10 @@ static NSOperationQueue *ATSharedOperationQueue() {
     static NSOperationQueue *_ATSharedOperationQueue = nil;
     if (_ATSharedOperationQueue == nil) {
         _ATSharedOperationQueue = [[NSOperationQueue alloc] init];
-        // We limit the concurrency to see things easier for demo purposes. The default value NSOperationQueueDefaultMaxConcurrentOperationCount will yield better results, as it will create more threads, as appropriate for your processor
+        // We limit the concurrency to see things easier for demo purposes.
+        // The default value NSOperationQueueDefaultMaxConcurrentOperationCount will yield
+        // better results, as it will create more threads, as appropriate for your processor
+        //
 #if DEMO_MODE
        [_ATSharedOperationQueue setMaxConcurrentOperationCount:1];
 #endif
@@ -187,7 +191,9 @@ static NSImage *ATThumbnailImageFromImage(NSImage *image) {
     NSArray *result = nil;
     // This property is declared as atomic. We use @synchronized to ensure that promise is kept
     @synchronized(self) {
-        // It would be nice if this was asycnhronous to avoid any stalls while we look at the file system. A mechanism similar to how the ATDesktopImageEntity loads images could be used here
+        // It would be nice if this was asycnhronous to avoid any stalls while we look at the file system.
+        // A mechanism similar to how the ATDesktopImageEntity loads images could be used here
+        //
         if (_children == nil && self.fileURL != nil) {
             NSArray *imageUTIs = [NSImage imageTypes];
             
@@ -213,6 +219,7 @@ static NSImage *ATThumbnailImageFromImage(NSImage *image) {
                 }
             }
             _children = newChildren;
+            [urls release];
         }
         result = [[_children retain] autorelease];
     }

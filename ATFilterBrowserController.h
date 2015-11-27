@@ -2,7 +2,7 @@
      File: ATFilterBrowserController.h 
  Abstract: A basic controller that takes an input sourceImage and generates a resulting filteredImage through a series of modifications from NSBrowser. Demonstrates the use of SnowLeopard NSBrowser item-based API.
   
-  Version: 1.0 
+  Version: 1.1 
   
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple 
  Inc. ("Apple") in consideration of your agreement to the following 
@@ -42,7 +42,7 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE 
  POSSIBILITY OF SUCH DAMAGE. 
   
- Copyright (C) 2009 Apple Inc. All Rights Reserved. 
+ Copyright (C) 2012 Apple Inc. All Rights Reserved. 
   
 */
 
@@ -66,7 +66,7 @@
 @property (readonly) NSImage *filteredImage;
 
 // When the button on the resulting preview controller is clicked, we send out this target/applyAction message
-@property (assign) IBOutlet id target;
-@property (assign) IBOutlet SEL applyAction;
+@property (assign) id target;
+@property (assign) SEL applyAction;
 
 @end

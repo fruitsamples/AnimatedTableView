@@ -2,7 +2,7 @@
      File: ATDynamicTableView.m
  Abstract: An NSTableView subclass that adds delegate extensions for lazily batch loading cell contents, sub-view support, and multi-valued properties.
  
-  Version: 1.0
+  Version: 1.1
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -42,7 +42,7 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  
- Copyright (C) 2009 Apple Inc. All Rights Reserved.
+ Copyright (C) 2012 Apple Inc. All Rights Reserved.
  
 */
 
@@ -104,7 +104,8 @@
             if (visibleRowsNeedsUpdate) {
                 // First, remove any views that are no longer before our new visible rows
                 NSMutableIndexSet *rowIndexesToRemove = [NSMutableIndexSet indexSetWithIndexesInRange:oldVisibleRows];
-                // Remove any rows from the set that are STILL visible; we want a resulting index set that has the views which are no longer on screen.
+                // Remove any rows from the set that are STILL visible; we want a resulting
+                // index set that has the views which are no longer on screen.
                 [rowIndexesToRemove removeIndexesInRange:newVisibleRows];
                 // Remove those views which are no longer visible
                 [self _removeCachedViewsInIndexSet:rowIndexesToRemove];
@@ -112,7 +113,8 @@
             
             [self _ensureVisibleRowsIsCreated];
             
-            // Finally, update and add in any new views given to us by the delegate. Use [NSNull null] for things that don't have a view at a particular row
+            // Finally, update and add in any new views given to us by the delegate.
+            // Use [NSNull null] for things that don't have a view at a particular row
             for (NSInteger row = _visibleRows.location; row < NSMaxRange(_visibleRows); row++) {
                 NSNumber *key = [NSNumber numberWithInteger:row];
                 id view = [_viewsInVisibleRows objectForKey:key];
@@ -122,7 +124,8 @@
                     if (view != nil) {
                         [self addSubview:view];
                     } else {
-                        // Use null as a place holder so we don't call the delegate again until the row is relaoded
+                        // Use null as a place holder so we don't call the delegate again
+                        // until the row is relaoded
                         view = [NSNull null]; 
                     }
                     [_viewsInVisibleRows setObject:view forKey:key];

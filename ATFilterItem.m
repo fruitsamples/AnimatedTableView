@@ -2,7 +2,7 @@
      File: ATFilterItem.m
  Abstract: A basic model object item that is used in the NSBrowser demo. An ATFilterItem represents a CoreImage filter.
  
-  Version: 1.0
+  Version: 1.1
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -42,7 +42,7 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  
- Copyright (C) 2009 Apple Inc. All Rights Reserved.
+ Copyright (C) 2012 Apple Inc. All Rights Reserved.
  
  */
 
@@ -155,11 +155,15 @@
     return ciImage;
 }
 
-// Core Image uses CIImage, so it's easer to keep the source and result as CIImages. However, we convert the result to an NSImage here to allow binding to an NSImageView.
+// Core Image uses CIImage, so it's easer to keep the source and result as CIImages.
+// However, we convert the result to an NSImage here to allow binding to an NSImageView.
 - (NSImage *)resultingNSImage {
     CIImage *ciImage = self.resultingImage;
     if (ciImage != nil) {
-        // We want to create a resulting image that is the same size as the source image. To do that, we manually create a bitmap image rep and draw into it without the extent that the filter applies.
+        // We want to create a resulting image that is the same size as the source image.
+        // To do that, we manually create a bitmap image rep and draw into it without the
+        // extent that the filter applies.
+        //
         CGRect imageExtent = [ciImage extent];
         imageExtent.size.width += 2*(imageExtent.origin.x);
         imageExtent.size.height += 2*(imageExtent.origin.y);
@@ -189,7 +193,11 @@
     }
 }
 
-// ATFilterItem only allows the modification of one filter attribute that must be set during initialization. This is done to keep this sample focused on NSBrowser while showing binding a user changeable value to a column header. If you want to read more on Core Image filters, stacking them, or thier various properties, please see the "Fun House" sample project.
+// ATFilterItem only allows the modification of one filter attribute that must be set during
+// initialization. This is done to keep this sample focused on NSBrowser while showing
+// binding a user changeable value to a column header. If you want to read more on
+// Core Image filters, stacking them, or thier various properties, please see the "Fun House" sample project.
+//
 - (NSNumber *)inputMin {
     return [[[self.filter attributes] objectForKey:self.inputKey] objectForKey:kCIAttributeSliderMin];
 }

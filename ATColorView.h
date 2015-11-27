@@ -2,7 +2,7 @@
      File: ATColorView.h 
  Abstract: A basic NSView subclass that supports having a background color.
   
-  Version: 1.0 
+  Version: 1.1 
   
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple 
  Inc. ("Apple") in consideration of your agreement to the following 
@@ -42,7 +42,7 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE 
  POSSIBILITY OF SUCH DAMAGE. 
   
- Copyright (C) 2009 Apple Inc. All Rights Reserved. 
+ Copyright (C) 2012 Apple Inc. All Rights Reserved. 
   
 */
 
@@ -50,6 +50,7 @@
 
 // A Custom view that has a background color drawn by the layer. The property is animatable.
 // This view requires you to have "setWantsLayer:YES" set on the view.
+//
 @interface ATColorView : NSView {
 
 }
